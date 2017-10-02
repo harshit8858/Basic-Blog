@@ -1,0 +1,38 @@
+{% extends 'header.html' %}
+
+    {% load staticfiles %}
+   <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
+
+{% block navbar %}
+
+<form class="navbar-form navbar-left" action="/search/" method="post">
+    {% csrf_token %}
+	<div class="form-group">
+	    <input type="text" class="form-control" placeholder="Search" name="search" id="search_box">
+	</div>
+	<button type="submit" class="btn btn-default">Submit</button>
+</form>
+<li><a href="/network/">Network</a></li>
+<li><a href="/profile/">Profile</a></li>
+<li><a href="/logout/">logout</a></li>
+{% endblock %}
+
+{% block content %}
+
+<!--
+<div style="margin-left:400px">
+<form action='/search/' method="post">{% csrf_token %}
+        <div>
+            <input type="text"  placeholder="Search" name="search" />
+                <button type="submit">Search</button>
+        </div>
+ </form>
+</div>
+-->
+<h3>Record not Found..!</h3>
+</div>
+
+<br /><br />
+<a href="/">Home page</a>
+
+{% endblock %}

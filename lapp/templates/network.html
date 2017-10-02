@@ -1,0 +1,96 @@
+{% extends 'header.html' %}
+
+    {% load staticfiles %}
+   <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
+
+
+{% block navbar %}
+<form class="navbar-form navbar-left" action="/search/" method="post">
+    {% csrf_token %}
+	<div class="form-group">
+	    <input type="text" class="form-control" placeholder="Search" name="search" id="search_box">
+	</div>
+	<button type="submit" class="btn btn-default">Submit</button>
+</form>
+<li><a class="test" href="/network/" data-toggle="tooltip" data-placement="bottom" title="Show Friends!">Friends</a></li>
+<li><a href="/profile/">Profile</a></li>
+<li><a href="/logout/">Logout</a></li>
+{% endblock %}
+
+{% block content %}
+
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<script>
+$(document).ready(function(){
+    $("#but").click(function(){
+        $.ajax({url: "ajax_sample", success: function(result){
+            $("#div1").html(result);
+        }});
+    });
+});
+</script>
+
+<div id="div1"><h2>Ajax</h2></div>
+<button id="but" class="btn btn-success">Get All Username</button>
+
+<hr><hr><hr>
+
+<h2><b>{{fullname }}</b> is logged in</h2>
+<hr width="500px" align="left" />
+<hr width="500px" align="left" />
+
+<h3 class="bg-info" style="width:180px">No. of Friends:{{ t| length }} </h3>
+<hr width="400px" align="left" />
+<hr width="400px" align="left" />
+
+{% for i in t %}
+
+<h3>{{ i.username }}</h3>
+<!--<a href="{% url 'profile1' i.id %}" class="btn btn-info">Profile</a>-->
+
+<div class="container">
+	<ul class="list-inline">
+    <li><a href="{% url 'profile1' i.id %}" data-toggle="tooltip" data-placement="left" title="See His Post">Profile</a></li>
+  </ul>
+</div>
+<hr width="800px" align="left" />
+{% endfor %}
+
+<script>
+$(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip();
+});
+</script>
+<style>
+  /* Tooltip */
+  .test + .tooltip > .tooltip-inner {
+      background-color: #73AD21;
+      color: #FFFFFF;
+      border: 1px solid black;
+      padding: 15px;
+      font-size: 20px;
+  }
+  /* Tooltip on top */
+  .test + .tooltip.top > .tooltip-arrow {
+      border-top: 5px solid green;
+  }
+  /* Tooltip on bottom */
+  .test + .tooltip.bottom > .tooltip-arrow {
+      border-bottom: 5px solid blue;
+  }
+  /* Tooltip on left */
+  .test + .tooltip.left > .tooltip-arrow {
+      border-left: 5px solid red;
+  }
+  /* Tooltip on right */
+  .test + .tooltip.right > .tooltip-arrow {
+      border-right: 5px solid black;
+  }
+  </style>
+
+<button>hi</button>
+{% endblock %}

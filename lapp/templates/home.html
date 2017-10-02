@@ -1,0 +1,280 @@
+{% extends 'header.html' %}
+<style>.button {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    width:50px;
+    text-align: center;
+
+    font-size: 16px;
+	height:35px;
+}
+.button1 {
+    background-color: #0000FF;
+    border: none;
+    color: white;
+    width:60px;
+    text-align: center;
+	text-decoration:none
+    font-size: 16px;
+	height:35px;
+}
+</style>
+    {% load staticfiles %}
+   <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
+
+{% block navbar %}
+<form class="navbar-form navbar-left" action="/search/" method="post">
+    {% csrf_token %}
+	<div class="form-group">
+	    <input type="text" class="form-control" placeholder="Search" name="search" id="search_box">
+	</div>
+	<button type="submit" class="btn btn-default">Submit</button>
+</form>
+<li><a href="/network/"><span class="glyphicon glyphicon-phone">Friends</a></li>
+<li><a href="/profile/"><span class="glyphicon glyphicon-user"></span>Profile</a></li>
+<li><a href="/logout/"><span class="glyphicon glyphicon-log-out"></span>Logout</a></li>
+{% endblock %}
+
+
+{% block content %}
+
+    <div align="right"> <h2>No. of Visit:{{ num }}{% ifequal num 1 %} time {% else %} times{% endifequal %}</h2></div>
+    <h2>Welcome {{fullname }}</h2>
+
+<!--<div style="margin-left:400px">
+    <form action='/search/' method="post">
+        {% csrf_token %}
+        <div>
+            <input type="text"  placeholder="Search" name="search" />
+
+                <button type="submit">Search</button>
+
+    </form>
+</div>
+-->
+
+<!--<form action="" method="post" enctype = "multipart/form-data">-->
+    <!--{% csrf_token %}-->
+    <!--&lt;!&ndash;{{ form.as_p }}&ndash;&gt;-->
+    <!--{{ form.title }}-->
+    <!--{{form.content }}-->
+    <!--{{form.pic}}<br>-->
+    <!--<button type="submit">Insert</button>-->
+
+<!--</form>-->
+
+<div style="width:120px;margin-left:30%;">
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Create Post</h3>
+  </div>
+</div>
+
+<form action="" id="form-main" class="form-main" method='post' enctype="multipart/form-data">
+{% csrf_token %}
+<!--{{form.title}}-->
+<!--{{form.content}}-->
+<!--{{form.pic}}(Optional)<br>-->
+<input type="text" style="width:400px" name="title" id="title" class="title form-control" />
+<input type="text" style="width:400px;height:100px" name="content" id="content" class="content form-control" />
+<input type="file" style="width:210px" value="Pic" class="btn btn-success" name="pic" />
+<button id="button" type='submit' class="btn btn-default">Save</button>
+</form>
+</div>
+
+<h2>No. of POSTS:{{ text| length }} </h2>
+<!--{{ comment }}-->
+<hr width="90%" />
+
+<div id="main-form">
+
+{% for i in text %}
+
+<div class="col-sm-12" style="background-color:white">
+     <div class="thumbnail" style="background-color:lightyellow">
+	   <div class="caption">
+<table class="tb">
+        <tr style="width:100%">
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+      <h3 class="panel-title">Title:<b>{{ i.title }}</b></h3>
+  </div>
+</div>
+<small>{{ i.date|timesince }}</small>
+<h3>Username:<b>{{i.username}}</b></h3>
+    {{i.content}}<br>
+{% if i.pic %}
+<img src="{{i.pic.url}}" width=" %0px" height="200px" /><br><br>
+{% endif %}<br/>
+
+    <a href="" >Likes</a><br>
+        <u><b>Comments()</b></u>:<br/>
+
+        <ul id="comment_form">
+
+            {% if comment %}
+            {% for j in comment %}
+            {% if j.box.id == i.id %}
+                <li>
+                    {{ j.comment }}<br>
+                </li>
+            {% endif %}
+            {% endfor %}
+            {% endif %}
+
+        </ul>
+
+            <form class="post-comment" action="{% url 'comment' %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="hidden" name="take_id" value="{{ i.id }}">
+                <input id="com" type="text" class="com" placeholder="Comment" name="comment">
+                <input type="submit" >
+                <!--{{ form1.as_p }}-->
+            </form>
+
+            <br>
+{% ifequal i.username request.user %}
+<a href="{% url 'delete' i.id %}" class="btn btn-primary btn-md">Delete</a>
+<a href="{% url 'edit' i.id %}" class="btn btn-primary btn-md">Edit</a>
+{% endifequal %}
+<br><br>
+<hr width="80%" height="10px" />
+        </tr>
+</table>
+       </div></div></div>
+{% endfor %}
+<br>
+</table>
+</div>
+
+<ul class="main">
+    {% for i in t %}
+        <li>
+            {{ i.title }}
+            {{ i.content }}
+        </li>
+    {% endfor %}
+</ul>
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+
+console.log("#");
+	$(document).on('submit','.post-comment',function(e){
+		e.preventDefault();
+		console.log("#");
+			$.ajax({
+				type:'POST',
+				url:"{% url 'comment' %}",
+				data:{
+					comment:$('.com').val(),
+					csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()
+					},
+					success:function(data){
+						if(data=="") {
+							$("#comment_form").append($('.com').val());
+							$('.com').val('');
+						}
+						else
+							alert(data);
+					}
+				});
+			});
+
+console.log("#");
+	$(document).on('submit','.form-main',function(e){
+		e.preventDefault();
+		console.log("#");
+			$.ajax({
+				type:'POST',
+				url:"{% url 'index' %}",
+				data:{
+					title:$('.title').val(),
+					content:$('.content').val(),
+					csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()
+					},
+					success:function(data){
+						if(data=="Success") {
+							$("#main").append($('.title').val()+'<br>'+$('.content').val()+'<br>');
+							$('.title').val('');
+							$('.content').val('');
+						}
+						else
+							alert(data);
+					}
+				});
+			});
+</script>
+
+<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>-->
+<!--<script>-->
+<!--$(document).ready(function(){-->
+    <!--$(".post-comment").click(function(e){-->
+        <!--e.preventDefault();-->
+        <!--var form = $(this)[0];-->
+        <!--var pform = $(this).parent();-->
+        <!--&lt;!&ndash;$this.find('.fa-send').hide();&ndash;&gt;-->
+        <!--&lt;!&ndash;$this.find('.fa-spinner').toggle();&ndash;&gt;-->
+<!--&lt;!&ndash;&ndash;&gt;-->
+		<!--// Create an FormData object-->
+        <!--var data = new FormData(form);-->
+<!--&lt;!&ndash;&ndash;&gt;-->
+<!--//        return false;-->
+         <!--$.ajax({-->
+            <!--type: "POST",-->
+            <!--&lt;!&ndash;enctype: 'multipart/form-data',&ndash;&gt;-->
+            <!--url: {% url 'comment' %},-->
+            <!--data: $(".post-comment"),-->
+            <!--processData: false,-->
+            <!--contentType: false,-->
+            <!--cache: false,-->
+            <!--timeout: 600000,-->
+            <!--success: function (msg) {-->
+                <!--$(this).prepend("<p class="bg-info" align="justify">-->
+                                <!--$(this).children("#com").val() -->
+                                <!--</p>")-->
+            <!--},-->
+            <!--error: function (e) {-->
+                <!--alert("error!");-->
+            <!--}-->
+<!--&lt;!&ndash;&ndash;&gt;-->
+        <!--});-->
+    <!--});-->
+<!--});-->
+<!--</script>-->
+<!--&lt;!&ndash;&ndash;&gt;-->
+<!--&lt;!&ndash;&ndash;&gt;-->
+<!--<script type="text/javascript" charset="utf-8">-->
+  <!--function bindPostCommentHandler() {-->
+      <!--$('#comment_form form input.submit-preview').remove();-->
+      <!--$('#comment_form form').submit(function() {-->
+          <!--$.ajax({-->
+              <!--type: "POST",-->
+              <!--data: $('#comment_form form').serialize(),-->
+              <!--url: "{% url 'comment' %}",-->
+              <!--cache: false,-->
+             <!--dataType: "html",-->
+             <!--success: function(html, textStatus) {-->
+                 <!--$('#comment_form form').replaceWith(html);-->
+                 <!--bindPostCommentHandler();-->
+             <!--},-->
+             <!--error: function (XMLHttpRequest, textStatus, errorThrown) {-->
+                 <!--$('#comment_form form').replaceWith('Your comment was unable to be posted at this time.  We apologise for the inconvenience.');-->
+             <!--}-->
+         <!--});-->
+         <!--return false;-->
+     <!--});-->
+ <!--}-->
+<!--&lt;!&ndash;&ndash;&gt;-->
+ <!--$(document).ready(function() {-->
+     <!--bindPostCommentHandler();-->
+ <!--});-->
+ <!--</script>-->
+
+{% endblock %}

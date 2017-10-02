@@ -1,0 +1,104 @@
+{% extends 'header.html' %}
+
+{% block navbar %}
+<form class="navbar-form navbar-left" action="/search/" method="post">
+    {% csrf_token %}
+	<div class="form-group">
+	    <input type="text" class="form-control" placeholder="Search" name="search" id="search_box">
+	</div>
+	<button type="submit" class="btn btn-default">Submit</button>
+</form>
+<li><a href="/network/">Network</a></li>
+<li><a href="/profile/">Profile</a></li>
+<li><a href="/logout/">Logout</a></li>
+{% endblock %}
+
+{% block content %}
+
+<div align="right">
+<button class="btn"><a href="{% url 'my_files' %}">Your Posts</a></button>&nbsp;<button class="btn"><a href="/cpassword">Change Password</a></button>
+</div>
+
+<form class="profieform" action="{% url 'profile' %}" method="post">
+    {% csrf_token %}
+   <b>Username:</b>{{ form1.username }}
+    {{ form.as_p }}
+
+
+    <input type="submit" value="Submit" />
+</form>
+
+<hr width="1000px" />
+<hr width="1000px" />
+
+<!--<form class="newform" method="post" action="#">-->
+    <!--{% csrf_token %}-->
+    <!--<input type="text" id="new" name="fi" />-->
+<!--</form>-->
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+    console.log("#");
+    $(document).on('submit','.profileform',function(e){
+        e.preventDefault();
+
+        $.ajax({
+            type:'POST',
+            url:"/profile/",
+            data:{
+                job:$('#job').val(),
+                number:$('#number').val(),
+                csrfmiddlewaretoken:$('input[fi=csrfmiddlewaretoken]').val()
+                },
+                success:function(){
+                    alert("Done!");
+                }
+            });
+        });
+</script>
+
+<!--<h1><u>YOUR POSTs</u><br><small><u>{{ fullname }}</u><small> is logged IN </small></brsmall></h1>-->
+
+<!--{% for i in t %}-->
+<!--{% ifequal i.username request.user %}-->
+    <!--<h2>{{ i.title }}</h2>-->
+<!--<small>{{ i.date|timesince }}</small><br>-->
+    <!--{{i.content}}<br>-->
+<!--{% if i.pic %}-->
+<!--<img src="{{i.pic.url}}" width="300px" height="200px" /><br><br>-->
+<!--{% endif %}-->
+<!--{% ifequal i.username request.user %}-->
+<!--<a href="{% url 'delete' i.id %}">Delete</a>-->
+<!--<a href="{% url 'edit' i.id %}">Edit</a>-->
+<!--{% endifequal %}-->
+<!--<br><br>-->
+<!--<hr width="500px">-->
+<!--{% endifequal %}-->
+<!--{% endfor %}-->
+<!--<br>-->
+
+{% endblock %}
