@@ -70,15 +70,15 @@ def index(request):
                 # form1 = Commentform(request.POST)
 
                 if form.is_valid():
-                    print("hvhjsdgfkjsd")
+                    # print("hvhjsdgfkjsd")
                     f = form.save(commit = False)
                     f.username = request.user
                     f.save()
-                    print("hvhjsdgfkjsd")
+                    # print("hvhjsdgfkjsd")
                     # form.save()
-                    return HttpResponse("Success")
-                else:
-                    return HttpResponse("NOt valid!")
+                    return HttpResponseRedirect('/index')
+                # else:
+                #     return HttpResponse("NOt valid!")
 
             else:
                 form = Boxform()
@@ -204,7 +204,6 @@ def comment(request):
     # comment = Comment.objects.all()
     # comment_serialized = serializers.serialize('json', comment)
     box_id = request.POST["take_id"]
-    print(box_id)
     box_obj = Box.objects.get(id=box_id)        # for grabbing particular post's comments
     if request.method == 'POST':
          form1 = Commentform(request.POST)
@@ -212,8 +211,10 @@ def comment(request):
          if form1.is_valid():
             f1=form1.save(commit=False)
             f1.box=box_obj
+            f1.user=request.user
             f1.save()
-            return HttpResponse("")
+            # return HttpResponse("")
+            return HttpResponseRedirect('/')
          else:
              return HttpResponse("Something went wrong!")
             # return JsonResponse(comment_serialized,safe=False)

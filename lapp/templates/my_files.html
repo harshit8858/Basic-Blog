@@ -16,20 +16,20 @@
 {% block content %}
 <h1><u>YOUR POSTs</u><br><small><u>{{ fullname }}</u><small> is logged IN </small></br></small></h1>
 
-<form method="post" action="{% url 'my_files' %}" class="lform">
-	{% csrf_token %}
-	<input type="text" name="number" id="count" class="count" />
-	<!--{{ form.as_p }}-->
-	<button>Submit</button>
-</form>
-<ul id="ul">
-	{% for i in l %}
-		<li>
-		{{ i.like }}
-		{{ i.count }}<br>
-		</li>
-	{% endfor %}
-</ul>
+<!--<form method="post" action="{% url 'my_files' %}" class="lform">-->
+	<!--{% csrf_token %}-->
+	<!--<input type="text" name="number" id="count" class="count" />-->
+	<!--&lt;!&ndash;{{ form.as_p }}&ndash;&gt;-->
+	<!--<button>Submit</button>-->
+<!--</form>-->
+<!--<ul id="ul">-->
+	<!--{% for i in l %}-->
+		<!--<li>-->
+		<!--{{ i.like }}-->
+		<!--{{ i.count }}<br>-->
+		<!--</li>-->
+	<!--{% endfor %}-->
+<!--</ul>-->
 
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>

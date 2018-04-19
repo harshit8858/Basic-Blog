@@ -40,7 +40,7 @@
 {% block content %}
 
     <div align="right"> <h2>No. of Visit:{{ num }}{% ifequal num 1 %} time {% else %} times{% endifequal %}</h2></div>
-    <h2>Welcome {{fullname }}</h2>
+    <h2>Welcome <u><b>{{fullname }}</b></u></h2>
 
 <!--<div style="margin-left:400px">
     <form action='/search/' method="post">
@@ -107,7 +107,7 @@
 <h3>Username:<b>{{i.username}}</b></h3>
     {{i.content}}<br>
 {% if i.pic %}
-<img src="{{i.pic.url}}" width=" %0px" height="200px" /><br><br>
+<img src="{{i.pic.url}}" width=" %100px" height="200px" /><br><br>
 {% endif %}<br/>
 
     <a href="" >Likes</a><br>
@@ -165,52 +165,52 @@
 
 <script type="text/javascript">
 
-console.log("#");
-	$(document).on('submit','.post-comment',function(e){
-		e.preventDefault();
-		console.log("#");
-			$.ajax({
-				type:'POST',
-				url:"{% url 'comment' %}",
-				data:{
-					comment:$('.com').val(),
-					csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()
-					},
-					success:function(data){
-						if(data=="") {
-							$("#comment_form").append($('.com').val());
-							$('.com').val('');
-						}
-						else
-							alert(data);
-					}
-				});
-			});
+<!--console.log("#");-->
+	<!--$(document).on('submit','.post-comment',function(e){-->
+		<!--e.preventDefault();-->
+		<!--console.log("#");-->
+			<!--$.ajax({-->
+				<!--type:'POST',-->
+				<!--url:"{% url 'comment' %}",-->
+				<!--data:{-->
+					<!--comment:$('.com').val(),-->
+					<!--csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()-->
+					<!--},-->
+					<!--success:function(data){-->
+						<!--if(data=="") {-->
+							<!--$("#comment_form").append($('.com').val());-->
+							<!--$('.com').val('');-->
+						<!--}-->
+						<!--else-->
+							<!--alert(data);-->
+					<!--}-->
+				<!--});-->
+			<!--});-->
 
-console.log("#");
-	$(document).on('submit','.form-main',function(e){
-		e.preventDefault();
-		console.log("#");
-			$.ajax({
-				type:'POST',
-				url:"{% url 'index' %}",
-				data:{
-					title:$('.title').val(),
-					content:$('.content').val(),
-					csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()
-					},
-					success:function(data){
-						if(data=="Success") {
-							$("#main").append($('.title').val()+'<br>'+$('.content').val()+'<br>');
-							$('.title').val('');
-							$('.content').val('');
-						}
-						else
-							alert(data);
-					}
-				});
-			});
-</script>
+<!--console.log("#");-->
+	<!--$(document).on('submit','.form-main',function(e){-->
+		<!--e.preventDefault();-->
+		<!--console.log("#");-->
+			<!--$.ajax({-->
+				<!--type:'POST',-->
+				<!--url:"{% url 'index' %}",-->
+				<!--data:{-->
+					<!--title:$('.title').val(),-->
+					<!--content:$('.content').val(),-->
+					<!--csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()-->
+					<!--},-->
+					<!--success:function(data){-->
+						<!--if(data=="Success") {-->
+							<!--$("#main").append($('.title').val()+'<br>'+$('.content').val()+'<br>');-->
+							<!--$('.title').val('');-->
+							<!--$('.content').val('');-->
+						<!--}-->
+						<!--else-->
+							<!--alert(data);-->
+					<!--}-->
+				<!--});-->
+			<!--});-->
+<!--</script>
 
 <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>-->
 <!--<script>-->
