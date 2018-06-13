@@ -17,13 +17,17 @@ urlpatterns = [
     url(r'^network/delete/(\d+)$', delete, name='delete'),
     url(r'^search/$', search),
     url(r'^edit/(\d+)/$', edit, name="edit"),
-    url(r'^profile/$', profile, name='profile'),
-    url(r'^my_files/$', my_files, name='my_files'),
+    url(r'^profile/$', my_files, name='profile'),
     url(r'^profile1/(\d+)/$', profile1, name='profile1'),
     url(r'^home/$', home, name='home'),
     url(r'^network/$', network, name='network'),
     url(r'^cpassword/$', password, name='cpassword'),
     url(r'^comment/$', comment, name='comment'),
-    url(r'^network/ajax_sample/$', ajax_sample, name='ajax_sample'),
+    url(r'^comment_profile/$', comment_profile, name='comment_profile'),
+    url(r'like/(\d+)/$', like, name='like'),
+    url(r'like_profile/(\d+)/$', like_profile, name='like_profile'),
+    url(r'dis/(\d+)/$', dis, name='dis'),
+    url(r'dis_profile/(\d+)/$', dis_profile, name='dis_profile'),
+    url(r'^profile_pic/$', profile_pic, name='profile_pic'),
 
-]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

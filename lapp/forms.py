@@ -1,75 +1,54 @@
 from django import forms
 from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
 from .models import *
 
 
-class RegistrationForm(forms.ModelForm):
-
-    username = forms.CharField(widget=forms.TextInput(attrs=dict(required=True,max_length=30)))
-    email = forms.EmailField(widget=forms.TextInput(attrs=dict(required=True,max_lentgth=30)))
-    password1 = forms.CharField(widget=forms.PasswordInput(attrs=dict(required=True,max_length=30,render_value=False)))
-    password2 = forms.CharField(widget=forms.PasswordInput(attrs=dict(required=True,max_length=30,render_value=False)))
-
-    def clean_username(self):
-        n = self.cleaned_data['username']
-
-        try:
-            match = User.objects.get(username__iexact=n)
-        except:
-            return self.cleaned_data['username']
-        raise forms.ValidationError("username already exist!")
-
+class SignUpForm(UserCreationForm):
+    email = forms.EmailField(help_text='must be unique', required=True, widget=forms.EmailInput(attrs={'placeholder':'E-Mail', 'class':'form-control', 'style':'width:200px'}))
+    password1 = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder':'Password','class': 'form-control', 'style':'width:200px'}), label="Password", required=True)
+    password2 = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder':'Confirm Password','class': 'form-control', 'style':'width:200px'}), label="Confirm Password", required=True)
+    username = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'Username','class': 'form-control', 'style':'width:200px'}), label="Username", required=True)
+    first_name = forms.CharField(required=True, widget=forms.TextInput(attrs={'placeholder':'First Name', 'class':'form-control', 'style':'width:200px'}))
+    last_name = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder':'Last Name', 'class':'form-control', 'style':'width:200px'}))
 
     def clean_email(self):
         mail = self.cleaned_data['email']
-
         try:
-            match = User.objects.get(username__iexact=mail)
+            match = User.objects.get(email__iexact=mail)
         except:
-            return self.cleaned_data['email']
-        raise forms.ValidationError("email already exist!")
-
-    def clean(self):
-        if 'password1' in  self.cleaned_data and 'password2' in self.cleaned_data:
-            if self.cleaned_data['password1'] != self.cleaned_data['password2']:
-                raise forms.ValidationError('didnt matched..try again!')
-            return self.cleaned_data
+            return mail
+        raise forms.ValidationError("Email already exists.")
 
     class Meta:
         model = User
-        fields = ['username','email','password1','password2']
+        fields = (
+                  'username',
+                  'first_name',
+                  'last_name',
+                  'email',
+                  'password1',
+                  'password2',
+                  )
 
 
 class Boxform(forms.ModelForm):
-    # title=forms.CharField(max_length=100,widget=forms.TextInput(attrs={'id':'title', 'placeholder': 'Title','class':'form-control','style':'width:300px;'}))
-    # content=forms.CharField(widget=forms.Textarea(attrs={'id':'content','placeholder':'Whats on your Mind!','rows': 4, 'cols': 50, 'style':'resize:none;width:300px;','class':'form-control'}))
-    # pic = forms.FileField(required=False)
+    # s_no = forms.IntegerField(required=True, max_value=999999, widget=forms.NumberInput(attrs={'placeholder':'Pincode', 'class':'form-control', 'style':'width:200px'}))
+    url = forms.URLField(widget=forms.TextInput(attrs={'placeholder': 'URL','class':'form-control','style':'width:400px;'}))
+    image = forms.FileField(required=False)
+    content = forms.CharField(widget=forms.Textarea(attrs={'placeholder':'Description', 'style':'resize:none;width:400px;height:200px','class':'form-control'}))
+    title = forms.CharField(max_length=400,widget=forms.TextInput(attrs={'placeholder': 'Title','class':'form-control','style':'width:400px;'}))
+    # likes =
+    # dislikes =
+    # created_at =
 
     class Meta:
         model = Box
-        fields = ['title','content','pic']
-
-
-class Profileform(forms.ModelForm):
-    job = forms.CharField(max_length=100,widget=forms.TextInput(attrs={'id':'job'}))
-    address = forms.CharField(max_length=100,widget=forms.TextInput(attrs={'id':'address'}))
-    profile_pic = forms.CharField(max_length=100,widget=forms.TextInput(attrs={'id':'profile_pic'}))
-    number = forms.CharField(max_length=100,widget=forms.TextInput(attrs={'id':'number'}))
-    class Meta:
-        model = Profile
-        exclude = ['user','password']
-        #fields = ['job','address','profile_pic','number']
-
-'''
-class Loginform(forms.ModelForm):
-
-    password = forms.CharField(widget=forms.PasswordInput(render_value=False)) #####
-
-    class Meta:
-        model = User
-        #widget = { 'password': forms.PasswordInput(),}
-        fields = '__all__'
-'''
+        fields = ['title',
+                  'content',
+                  'url',
+                  'image',
+                 ]
 
 
 class ChangePasswordForm(forms.ModelForm):
@@ -96,7 +75,8 @@ class Commentform(forms.ModelForm):
         model = Comment
         fields = ['comment']
 
-class ChangeForm(forms.ModelForm):
+
+class ProfileForm(forms.ModelForm):
     class Meta:
-        model = like
-        fields = '__all__'
+        model = Profile_pic
+        fields = ['p_pic']

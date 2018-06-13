@@ -25,7 +25,7 @@ def login(request):
 
 def register(request):
         if request.method == 'POST':
-            form = UserCreationForm(request.POST)
+            form = SignUpForm(request.POST)
 
             if form.is_valid():
                 #username = form.cleaned_data.get('username')
@@ -36,7 +36,7 @@ def register(request):
                 return HttpResponseRedirect('/')
 
         else:
-            form = UserCreationForm()
+            form = SignUpForm()
 
         return render(request, 'register.html', {'form':form})
 
@@ -61,47 +61,33 @@ def logout(request):
 
 @login_required
 def index(request):
-    try:
-        num_visit = request.session.get('num_visit',1)
-        request.session['num_visit']=num_visit+1
-        if request.user.is_authenticated():
-            if request.method == "POST":
-                form = Boxform(request.POST,request.FILES)
-                # form1 = Commentform(request.POST)
+    num_visit = request.session.get('num_visit',1)
+    request.session['num_visit']=num_visit+1
+    if request.method == "POST":
+        form = Boxform(request.POST,request.FILES)
+        if form.is_valid():
+            f = form.save(commit=False)
+            f.username = request.user
+            f.save()
 
-                if form.is_valid():
-                    # print("hvhjsdgfkjsd")
-                    f = form.save(commit = False)
-                    f.username = request.user
-                    f.save()
-                    # print("hvhjsdgfkjsd")
-                    # form.save()
-                    return HttpResponseRedirect('/index')
-                # else:
-                #     return HttpResponse("NOt valid!")
+            # print("hvhjsdgfkjsd")
+            # form.save()
+            return HttpResponseRedirect('/index')
 
-            else:
-                form = Boxform()
-                form1 = Commentform()
+    else:
+        form = Boxform()
+        form1 = Commentform()
 
-            n = Box.objects.all()
-            print(n)
-
-            n1 = Comment.objects.all()    # comment ka funct alag se bana hai...below!
-            return render(request, 'home.html', {'num':num_visit, 'fullname':request.user.username, 'text':n, 'comment':n1, 'form':form})
-
-        else:
-            return HttpResponseRedirect('/index/')
-
-    except Exception as e:
-        print(e)
-        return HttpResponse(e)
+    n = Box.objects.all()
+    n1 = Comment.objects.all()    # comment ka funct alag se bana hai...below!
+    return render(request, 'home.html', {'num':num_visit, 'fullname':request.user.username, 'text':n, 'comment':n1, 'form':form})
 
 
 def delete(request,d):
     n = Box.objects.get(id=d)
     n.delete()
     return HttpResponseRedirect('/index/')
+
 
 def search(request):
     if request.method == 'POST':
@@ -114,6 +100,7 @@ def search(request):
                 return render(request, 'notfound.html')
         else:
             return HttpResponseRedirect('/index/')
+
 
 def edit(request,d):
     n = Box.objects.get(id=d)
@@ -130,53 +117,18 @@ def edit(request,d):
 
     return render(request, 'edit.html', {'form':form})
 
-def profile(request):
-    # n = Box.objects.all()
-    if request.method == 'POST':
-        form = Profileform(request.POST,request.FILES)
-        form1 = UserCreationForm(request.POST,instance = request.user)
-        # form2 = Boxform(request.POST,request.FILES)
-
-        if form.is_valid() and form1.is_valid():
-            # user.username = form.cleaned_data.get('username')
-            # user.first_name = form.cleaned_data.get('first_name')
-            # user.last_name = form.cleaned_data.get('last_name')
-            # user.email = form.cleaned_data.get('email')
-            # user.password = form.cleaned_data.get('password')
-            Profile.job = form.cleaned_data.get('job')
-            Profile.profile_pic = form.cleaned_data.get('profile_pic')
-            Profile.number = form.cleaned_data.get('number')
-            Profile.address = form.cleaned_data.get('address')
-            form1.save()
-            # form2.save()
-            return HttpResponseRedirect('/profile/')
-
-    else:
-        form = Profileform()
-        form1 = UserCreationForm(instance=request.user)
-        # form2 = Boxform()
-
-    return render(request, 'profile.html', {'form':form, 'form1':form1, 'fullname':request.user.username})
 
 def my_files(request):
     n = Box.objects.all()
-    m = like.objects.all()
-    if request.method == "POST":
-        form = ChangeForm(request.POST)
-        print(form.errors)
-        if form.is_valid():
-            form.save()
-            return HttpResponse("Success")
-        else:
-            return HttpResponse("Not Valid")
-    else:
-        form = ChangeForm()
-    return render(request, 'my_files.html', {'l':m ,'t':n, 'fullname':request.user.username, 'form':form})
+    comment = Comment.objects.all()
+    return render(request, 'my_files.html', {'text':n, 'comment':comment})
+
 
 def network(request):
     n = User.objects.all()
     n = n.exclude(id=request.user.id)
     return render(request, 'network.html', {'t':n, 'fullname':request.user.username})
+
 
 def profile1(request,d):
     m = User.objects.get(id=d)
@@ -199,12 +151,17 @@ def password(request):
         form = PasswordChangeForm(user=request.user)
     return render(request, 'password.html', {'form': form})
 
+
 def comment(request):
     # d = Comment.objects.get(id)
     # comment = Comment.objects.all()
     # comment_serialized = serializers.serialize('json', comment)
     box_id = request.POST["take_id"]
+    print("box_id")
+    print(box_id)
     box_obj = Box.objects.get(id=box_id)        # for grabbing particular post's comments
+    print("box_obj")
+    print(box_obj)
     if request.method == 'POST':
          form1 = Commentform(request.POST)
          print(form1.errors)
@@ -224,15 +181,152 @@ def comment(request):
         #     comment = comment
         # )
         # return HttpResponse("")
-
     else:
         form1 = Commentform()
     # comment = Comment.objects.all()
     return render(request, 'home.html', {'form1':form1})
 
-def ajax_sample(request):
-    n = User.objects.all()
-    return render(request, 'ajax_sample.html', {'n':n})
 
-# def like(request):
-#     n = request.user.username
+def comment_profile(request):
+    # d = Comment.objects.get(id)
+    # comment = Comment.objects.all()
+    # comment_serialized = serializers.serialize('json', comment)
+    box_id = request.POST["take_id"]
+    print("box_id")
+    print(box_id)
+    box_obj = Box.objects.get(id=box_id)        # for grabbing particular post's comments
+    print("box_obj")
+    print(box_obj)
+    if request.method == 'POST':
+         form1 = Commentform(request.POST)
+         print(form1.errors)
+         if form1.is_valid():
+            f1=form1.save(commit=False)
+            f1.box=box_obj
+            f1.user=request.user
+            f1.save()
+            return redirect('profile')
+            # return JsonResponse(comment_serialized,safe=False)
+        # comment = request.POST['comment']
+        #
+        # Comment.objects.create(
+        #     comment = comment
+        # )
+        # return HttpResponse("")
+
+    else:
+        form1 = Commentform()
+    # comment = Comment.objects.all()
+    return render(request, 'my_files.html', {'form1':form1})
+
+
+def like(request,d):
+    n1 = Comment.objects.all()
+    print("like......vhjscvkjsdbjlsd")
+    l = Box.objects.get(id=d)
+    # k = Box.objects.get(user=request.user)
+    n = Box.objects.all()
+    print(l.like)
+    # if l.like_count%2 == 0:
+    l.like = l.like + int(1)       # increment the like button
+    # else:
+    # l.like = l.like - int(1)
+    print(l.like)
+    l.save()
+    if request.method == 'POST':
+        form = Boxform(request.POST,request.FILES)
+        if form.is_valid():
+            f = form.save(commit=False)
+            f.user = request.user
+            f.save()
+        return redirect('home')
+    else:
+        form = Boxform()
+    return render(request, 'home.html', {'form':form, 'text':n, 'like':l.like, 'comment':n1})
+
+
+def like_profile(request,d):
+    n1 = Comment.objects.all()
+    print("like......vhjscvkjsdbjlsd")
+    l = Box.objects.get(id=d)
+    # k = Box.objects.get(user=request.user)
+    n = Box.objects.all()
+
+    # like_count(request)
+
+    print(l.like)
+    # if l.like_count%2 == 0:
+    l.like = l.like + int(1)       # increment the like button
+    # else:
+    # l.like = l.like - int(1)
+    print(l.like)
+    l.save()
+    if request.method == 'POST':
+        form = Boxform(request.POST,request.FILES)
+        if form.is_valid():
+            f = form.save(commit=False)
+            f.user = request.user
+            f.save()
+        return redirect('profile')
+    else:
+        form = Boxform()
+    return render(request, 'my_files.html', {'form':form, 'text':n, 'like':l.like, 'comment':n1})
+
+
+def dis(request,d):
+    n1 = Comment.objects.all()
+    print("dislike......vhjscvkjsdbjlsd")
+    l = Box.objects.get(id=d)
+    n = Box.objects.all()
+    print(l.dis)
+    l.dis = l.dis + int(1)
+    print(l.dis)
+    l.save()
+    if request.method == 'POST':
+        form = Boxform(request.POST, request.FILES)
+        if form.is_valid():
+            f = form.save(commit=False)
+            f.user = request.user
+            f.save()
+        return redirect('home')
+    else:
+        form = Boxform()
+    return render(request, 'home.html', {'form':form, 'text':n, 'dislike':l.dis, 'comment':n1})
+
+
+def dis_profile(request,d):
+    n1 = Comment.objects.all()
+    print("dislike......vhjscvkjsdbjlsd")
+    l = Box.objects.get(id=d)
+    n = Box.objects.all()
+    print(l.dis)
+    l.dis = l.dis + int(1)
+    print(l.dis)
+    l.save()
+    if request.method == 'POST':
+        form = Boxform(request.POST, request.FILES)
+        if form.is_valid():
+            f = form.save(commit=False)
+            f.user = request.user
+            f.save()
+        return redirect('profile')
+    else:
+        form = Boxform()
+    return render(request, 'my_files.html', {'form':form, 'text':n, 'dislike':l.dis, 'comment':n1})
+
+
+def profile_pic(request):
+    pp = Profile_pic.objects.get(user=request.user)
+    print(pp)
+    n = Box.objects.all()
+    comment = Comment.objects.all()
+    if request.method == 'POST':
+        form = ProfileForm(request.POST,request.FILES)
+        if form.is_valid():
+            f = form.save(commit=False)
+            f.user = request.user
+            f.save()
+        return redirect('profile')
+    else:
+        form = ProfileForm()
+    return render(request, 'my_files.html', {'pp':pp, 'text':n, 'form':form, 'comment':comment})
