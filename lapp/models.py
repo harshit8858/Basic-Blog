@@ -5,9 +5,9 @@ from django.contrib.auth.models import User
 class Box(models.Model):
     username = models.ForeignKey(User,blank=True,null=True)
     title = models.CharField(max_length=1000)
-    content = models.TextField(max_length=8000)
+    content = models.TextField(max_length=10000)
     date = models.DateTimeField(auto_now=True,blank=True,null=True)
-    pic = models.FileField(upload_to='images',blank=True, null=True)
+    image = models.FileField(upload_to='images/',blank=True, null=True)
     url = models.URLField()
     like = models.IntegerField(default=0)
     dis = models.IntegerField(default=0)
@@ -31,7 +31,7 @@ class Comment(models.Model):
 
 class Profile_pic(models.Model):
     user = models.OneToOneField(User, blank=True, null=True)
-    p_pic = models.FileField(upload_to="profile_pic", blank=True, null=True)
+    p_pic = models.FileField(upload_to="profile_pic/", blank=True, null=True)
 
     def __str__(self):
         return str(self.user)

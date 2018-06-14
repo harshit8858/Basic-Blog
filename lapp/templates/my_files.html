@@ -37,6 +37,12 @@
         <button type="submit">Add Profile Picture</button>
     </form>
     {% endif %}
+<br/><br/>
+
+    {% if request.user.profile_pic %}
+        <a href="{% url 'edit_profile_pic' %}" class="btn btn-default">Change Profile Pic</a>
+    {% else %}
+    {% endif %}
 
 </div>
 
@@ -45,7 +51,7 @@
 {% for i in text %}
     {% if i.username == request.user %}
 <div style="background-color:white">
-     <div class="thumbnail" style="background-color:lightyellow">
+     <div class="thumbnail" style="">
 	   <div class="caption">
 <table class="tb">
         <tr style="width:100%">

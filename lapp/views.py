@@ -7,8 +7,8 @@ from .models import *
 from .forms import *
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
-from django.contrib.sessions.models import Session
-from django.core import serializers
+# from django.contrib.sessions.models import Session
+# from django.core import serializers
 
 
 def homepage(request):
@@ -17,11 +17,14 @@ def homepage(request):
     else:
         return login(request)
 
+
 def home(request):
     return render(request, 'home.html')
 
+
 def login(request):
     return render(request, 'homepage.html')
+
 
 def register(request):
         if request.method == 'POST':
@@ -40,6 +43,7 @@ def register(request):
 
         return render(request, 'register.html', {'form':form})
 
+
 def auth_check(request):
     username = request.POST['username']
     password = request.POST['password']
@@ -52,12 +56,15 @@ def auth_check(request):
     else:
         return HttpResponseRedirect('/invalid/')
 
+
 def invalid(request):
     return render(request, 'invalid.html')
+
 
 def logout(request):
     auth.logout(request)
     return HttpResponseRedirect('/')
+
 
 @login_required
 def index(request):
@@ -72,15 +79,14 @@ def index(request):
 
             # print("hvhjsdgfkjsd")
             # form.save()
-            return HttpResponseRedirect('/index')
+            return redirect('index')
 
     else:
         form = Boxform()
-        form1 = Commentform()
 
     n = Box.objects.all()
     n1 = Comment.objects.all()    # comment ka funct alag se bana hai...below!
-    return render(request, 'home.html', {'num':num_visit, 'fullname':request.user.username, 'text':n, 'comment':n1, 'form':form})
+    return render(request, 'home.html', {'num':num_visit, 'fullname':request.user.username, 'text':n, 'form':form})
 
 
 def delete(request,d):
@@ -330,3 +336,19 @@ def profile_pic(request):
     else:
         form = ProfileForm()
     return render(request, 'my_files.html', {'pp':pp, 'text':n, 'form':form, 'comment':comment})
+
+
+def edit_profile_pic(request):
+    p = Profile_pic.objects.get(user=request.user)
+    print(p)
+    n = Box.objects.all()
+    comment = Comment.objects.all()
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, request.FILES, instance=p)
+        if form.is_valid():
+            form.save()
+            return redirect('profile')
+    else:
+        form = ProfileForm(instance=p)
+    return render(request, 'edit_profiel_pic.html', {'text':n, 'form':form, 'comment':comment})
+

@@ -4,6 +4,7 @@ from lapp.views import *
 from django.conf import settings
 from django.conf.urls.static import static
 
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^index/$', index, name='index'),     # dollar sign represent that this regular expression is done, it is not neccessary to put a dollar sign.
@@ -29,5 +30,10 @@ urlpatterns = [
     url(r'dis/(\d+)/$', dis, name='dis'),
     url(r'dis_profile/(\d+)/$', dis_profile, name='dis_profile'),
     url(r'^profile_pic/$', profile_pic, name='profile_pic'),
+    url(r'^edit_profile_pic/$', edit_profile_pic, name='edit_profile_pic'),
 
-    ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    # ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
