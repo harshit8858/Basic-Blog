@@ -126,6 +126,13 @@ def edit(request,d):
 
 def my_files(request):
     n = Box.objects.all()
+
+    # for i in n:
+    #     if i.username == request.user:
+    #         print("1")
+    #         m = [i.title,i.content,i.url,i.image]
+    #         print(m)
+
     comment = Comment.objects.all()
     return render(request, 'my_files.html', {'text':n, 'comment':comment})
 
