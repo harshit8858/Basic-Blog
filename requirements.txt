@@ -44,7 +44,7 @@ django-tagging==0.4.5
 django-treebeard==4.0.1
 django-xmlrpc==0.1.5
 djangocms-admin-style==1.2.3
-djangorestframework==3.6.1
+djangorestframework==3.11.2
 docker-py==1.7.2
 dockerpty==0.4.1
 docopt==0.6.2
