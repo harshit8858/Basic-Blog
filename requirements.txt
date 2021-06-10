@@ -13,7 +13,7 @@ cryptography==1.9
 customerio==0.1.11
 decorator==4.0.10
 defusedxml==0.4.1
-Django==1.10.6
+Django==2.2.24
 django-admin==1.0.4
 django-admin-tools==0.8.0
 django-ajax-views==0.0.2
